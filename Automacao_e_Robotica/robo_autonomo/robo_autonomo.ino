@@ -1,6 +1,16 @@
 // ═══════════════════════════════════════════════════
 //  Robô autônomo — Arduino Uno R3
 //  HC-SR04 + Servo SG90 + L298N com controle de velocidade
+//
+//## Como compilar e enviar para a placa
+//
+// 1. Instale a Arduino IDE
+// 2. Abra o arquivo `robo_autonomo.ino`
+// 3. Instale a biblioteca `Servo.h`
+// 4. Selecione a placa: Arduino Uno
+// 5. Selecione a porta COM correta
+// 6. Clique em Upload
+
 // ═══════════════════════════════════════════════════
 
 #include <Servo.h>
