@@ -67,7 +67,8 @@
 #define DIST_MINIMA    28    // Distância em cm para considerar obstáculo
 #define ESPERA_PARADA 150    // Tempo (ms) para vibração dos motores sumir após parar
 #define ESPERA_SERVO  400    // Tempo (ms) para o servo chegar na posição desejada
-#define TEMPO_DESVIO  500    // Duração (ms) da manobra de desvio (giro ou recuo)
+#define TEMPO_DESVIO  830    // ms — ajustado com base no modelo cinematico
+                             // produz aproximadamente 90 graus de giro
 
 // ── Variáveis de instrumentação — frequência ─────────────────────
 // Estratégia: medir o tempo de INÍCIO a INÍCIO de cada iteração AVANÇAR
@@ -182,9 +183,15 @@ float lerDistancia() {
     // Se não houve eco, considera caminho livre (999 cm)
   if (duracao == 0) return 999;
 
-    // Converte o tempo para distância em centímetros
+  float dist = duracao * 0.034 / 2.0;
 
-  return duracao * 0.034 / 2.0;
+  // Filtro: HC-SR04 tem alcance minimo de 2 cm.
+  // Leituras abaixo disso sao espurias (reflexao indireta
+  // ou ruido eletrico dos motores DC) — tratadas como
+  // caminho livre para nao gerar decisao incorreta na MEF.
+  if (dist < 2.0) return 999;
+
+  return dist;
 }
 
 
@@ -196,8 +203,8 @@ void setup() {
   // Inicia a comunicação serial para monitoramento no PC
   Serial.begin(9600);
   Serial.println("============================================");
-  Serial.println("  Robo autonomo — PC3");
-  Serial.println("  Instrumentacao: frequencia + tempo resp.");
+  Serial.println("  Robo autonomo — PC4");
+  Serial.println("  Firmware final com filtro de leituras espurias.");
   Serial.println("============================================");
   // Configura pinos da ponte H como saída
   pinMode(IN1, OUTPUT); 
